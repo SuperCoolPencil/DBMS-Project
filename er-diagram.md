@@ -2,10 +2,11 @@
 
 ## 1. Assumptions
 
-- **Person:** Buyers, sellers, renters, and landlords are grouped into a single `Person` entity with a "Role" attribute. 
-- **Time on Market Calculation:** To calculate the "average time the property was on the market" a `Listing_Date` is required for properties and a `Transaction_Date` is required for sales/rentals. 
-- **Transaction:** To handle an agent selling or renting multiple properties over time a `Transaction` entity is used.
-- **Property States:** A property is either listed for 'Sale' or 'Rent'. Price representS the asking price or asking rent.
+- Buyers, sellers, renters, and landlords are grouped into a single `Customer` entity with a `Role` attribute. 
+- To calculate the "average time the property was on the market" a `Listing_Date` is required for properties and a `Txn_Date` is required for sales/rentals. 
+- To handle an agent selling or renting multiple properties over time a `Transaction` entity is used.
+- A property is either listed for 'Sale' or 'Rent'. Price representS the asking price or asking rent.
+- If a person wants to both own/sell property and rent/buy property they have to register twice.
 
 ## 2. Entities and Attributes
 
@@ -20,46 +21,47 @@
     * `City` (e.g. Guwahati)
     * `Locality` (e.g. G.S. Road)
     * `Type` (House/Apartment)
-    * `Size_SqFt`
+    * `Size_Sqft`
     * `Bedrooms`
     * `Year_Built`
-    * `Listing_Date`
     * `Purpose` (Sale/Rent)
     * `Base_Price` (Expected selling price or rent amount)
-* **Person**
-    * `Person_ID` **(PK)**
+* **Customer**
+    * `Cust_ID` **(PK)**
     * `Name`
     * `Phone`
+    * `Email`
     * `Role` (Buyer/Seller/Renter/Owner)
 * **Transaction**
-    * `Transaction_ID` **(PK)**
-    * `Transaction_Type` (Sale/Rent)
-    * `Transaction_Date`
+    * `Txn_ID` **(PK)**
+    * `Txn_Type` (Sale/Rent)
+    * `Txn_Date`
     * `Final_Amount` (Actual sold price or final rent amount)
 
 ## 3. Relationships & Cardinalities
 
 | Relationship Name | Entity 1 | Entity 2 | Cardinality | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **Owns / Lists** | Person | Property | 1 : N | One person (Owner/Seller) can list multiple properties but a property is listed by one person. |
+| **Owns / Sells** | Customer | Property | 1 : N | One customer (Owner/Seller) can list multiple properties for rent/sale but a property is listed by one customer. |
 | **Facilitates** | Agent | Transaction | 1 : N | One agent can do many transactions but a single transaction is done by one agent. |
 | **Involves** | Property | Transaction | 1 : N | A property can be sold/rented multiple times. |
-| **Participates** | Person | Transaction | 1 : N | A person (Buyer/Renter) can participate in multiple transactions. |
+| **Buys / Rents** | Customer | Transaction | 1 : N | A customer (Buyer/Renter) can participate in multiple transactions but a single transaction can only be done by one customer. |
 
-## 4. E-R Diagram (Mermaid)
+## 4. E-R Diagram
 
 ```mermaid
 graph TD
     %% Tables (Rectangles with Attributes)
     C["<b>CUSTOMER</b><hr><u>Cust_ID</u><br>Name<br>Phone<br>Email<br>Role"]
     T["<b>TRANSACTION</b><hr><u>Txn_ID</u><br>Txn_Type<br>Txn_Date<br>Final_Amount"]
-    P["<b>PROPERTY</b><hr><u>Property_ID</u><br>Address<br>City<br>Locality<br>Type<br>Size_SqFt<br>Bedrooms<br>Year_Built<br>Listing_Date<br>Purpose<br>Base_Price"]
-    A["<b>AGENT</b><hr><u>Agent_ID</u><br>Name<br>Phone<br>Email<br>"]
+    P["<b>PROPERTY</b><hr><u>Property_ID</u><br>Address<br>City<br>Locality<br>Type<br>Size_SqFt<br>Bedrooms<br>Year_Built<br>Purpose<br>Base_Price"]
+    A["<b>AGENT</b><hr><u>Agent_ID</u><br>Name<br>Phone<br>Email"]
+    LD["Listing_Date"]
 
     %% Relationships (Diamonds)
-    Rel_RentBuy{"Renter / Buyer"}
+    Rel_RentBuy{"Buyer / Renter"}
     Rel_Facilitates{"Facilitates"}
-    Rel_ListSellsProp{"Lists / Sells"}
+    Rel_ListSellsProp{"Owns / Sells"}
     Rel_Involves{"Involves"}
 
     %% CUSTOMER <--- Rent/Buy --- TRANSACTION
@@ -70,6 +72,7 @@ graph TD
 
     %% CUSTOMER <--- List/Sells --- PROPERTY
     P --- Rel_ListSellsProp --> C
+    Rel_ListSellsProp --- LD
 
     %% PROPERTY <--- Involves --- TRANSACTION
     T --- Rel_Involves --> P
