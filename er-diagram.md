@@ -49,41 +49,32 @@
 ## 4. E-R Diagram (Mermaid)
 
 ```mermaid
-erDiagram
-    AGENT {
-        int Agent_ID PK
-        string Name
-        string Phone
-        string Email
-    }
-    PROPERTY {
-        int Property_ID PK
-        string Address
-        string City
-        string Locality
-        string Type
-        int Size_SqFt
-        int Bedrooms
-        int Year_Built
-        date Listing_Date
-        string Purpose
-        float Base_Price
-    }
-    PERSON {
-        int Person_ID PK
-        string Name
-        string Phone
-        string Role
-    }
-    TRANSACTION {
-        int Transaction_ID PK
-        string Transaction_Type
-        date Transaction_Date
-        float Final_Amount
-    }
+graph TD
+    %% Tables (Rectangles with Attributes)
+    C["<b>CUSTOMER</b><hr><u>Cust_ID</u><br>Name<br>Phone<br>Email<br>Role"]
+    T["<b>TRANSACTION</b><hr><u>Txn_ID</u><br>Txn_Type<br>Txn_Date<br>Final_Amount"]
+    P["<b>PROPERTY</b><hr><u>Property_ID</u><br>Address<br>City<br>Locality<br>Type<br>Size_SqFt<br>Bedrooms<br>Year_Built<br>Listing_Date<br>Purpose<br>Base_Price"]
+    A["<b>AGENT</b><hr><u>Agent_ID</u><br>Name<br>Phone<br>Email<br>"]
 
-    PERSON ||--o{ PROPERTY : "Lists/Owns"
-    AGENT ||--o{ TRANSACTION : "Facilitates"
-    PROPERTY ||--o{ TRANSACTION : "Involves"
-    PERSON ||--o{ TRANSACTION : "Participates (Buys/Rents)"
-```
+    %% Relationships (Diamonds)
+    Rel_RentBuy{"Renter / Buyer"}
+    Rel_ListSellTxn{"Lister / Seller"}
+    Rel_Facilitates{"Facilitates"}
+    Rel_ListSellsProp{"Lists / Sells"}
+    Rel_Involves{"Involves"}
+
+    %% CUSTOMER <--- Rent/Buy --- TRANSACTION
+    T --- Rel_RentBuy --> C
+
+    %% CUSTOMER <--- List/Sell ---- TRANSACTION
+    T --- Rel_ListSellTxn --> C
+
+    %% AGENT <--- Facilitates --- TRANSACTION
+    T --- Rel_Facilitates --> A
+
+    %% CUSTOMER <--- List/Sells --- PROPERTY
+    P --- Rel_ListSellsProp --> C
+
+    %% PROPERTY <--- Involves --- TRANSACTION
+    T --- Rel_Involves --> P
+``` 
