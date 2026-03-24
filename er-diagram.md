@@ -58,16 +58,12 @@ graph TD
 
     %% Relationships (Diamonds)
     Rel_RentBuy{"Renter / Buyer"}
-    Rel_ListSellTxn{"Lister / Seller"}
     Rel_Facilitates{"Facilitates"}
     Rel_ListSellsProp{"Lists / Sells"}
     Rel_Involves{"Involves"}
 
     %% CUSTOMER <--- Rent/Buy --- TRANSACTION
     T --- Rel_RentBuy --> C
-
-    %% CUSTOMER <--- List/Sell ---- TRANSACTION
-    T --- Rel_ListSellTxn --> C
 
     %% AGENT <--- Facilitates --- TRANSACTION
     T --- Rel_Facilitates --> A
