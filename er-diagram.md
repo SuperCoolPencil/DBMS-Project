@@ -46,11 +46,6 @@
 
 ## 3. Relationships & Cardinalities
 
-**Cardinality Legend:**
-* `--->` indicates **1..1** (Exactly One)
-* `---` indicates **0..\*** (Zero to Many)
-* `===` indicates **1..\*** (One to Many)
-
 | Relationship Name | Entity 1 | Entity 2 | Cardinality | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | **Owns / Sells** | Customer | Property | 1 : N | One customer (Owner/Seller) can list multiple properties for rent/sale, but a property is listed by exactly one customer. |
@@ -59,6 +54,11 @@
 | **Buys / Rents** | Customer | Transaction | 1 : N | A customer (Buyer/Renter) can participate in multiple transactions, but a single transaction involves exactly one customer. |
 
 ## 4. E-R Diagram
+
+**Cardinality Legend:**
+* `--->` indicates **1..1** (Exactly One)
+* `---` indicates **0..\*** (Zero to Many)
+* `===` indicates **1..\*** (One to Many)
 
 ```mermaid
 graph TD
@@ -92,8 +92,23 @@ graph TD
 
     %% PROPERTY (1..1) to CUSTOMER (1..*)
     P ---> Rel_ListSellsProp
-    Rel_ListSellsProp === C
+    Rel_ListSellsProp --- C
 
     %% TRANSACTION (1..1) to PROPERTY (0..*)
     T ---> Rel_Involves
     Rel_Involves --- P
+
+```
+
+## 5. Team Contributions
+All team members collaborated equally on the conceptual design of this database. The establishment of assumptions, entity definitions, and the creation of the relationship/cardinality tables was done collectively as a group.
+
+## 6. AI Usage
+
+AI was used only for creating the diagram in mermaid from hand drawn.
+Prompt used:
+```prompt
+[Attached photo of hand drawn diargram]
+Can i get this diagram exactly in mermaid.
+IT HAS TO BE EXACT. INCLUDING THE DIAMOND SHAPE FOR RELATIONSHIPS AND RECTANGLE TABLES 
+```
