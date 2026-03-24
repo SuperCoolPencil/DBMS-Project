@@ -7,6 +7,11 @@
 - To handle an agent selling or renting multiple properties over time a `Transaction` entity is used.
 - A property is either listed for 'Sale' or 'Rent'. Price representS the asking price or asking rent.
 - If a person wants to both own/sell property and rent/buy property they have to register twice.
+- Each Customer and Agent provides exactly one phone number and one email address.
+- A property is strictly categorized as being for either 'Sale' or 'Rent'. 
+- Base_Price attribute represents the total asking price for sales or the monthly asking rent for rental listings.
+- Year_Built attribute is stored as a four-digit integer
+- Address is decomposed into Locality and City. We assume "Guwahati" as the default city unless otherwise specified.
 
 ## 2. Entities and Attributes
 
