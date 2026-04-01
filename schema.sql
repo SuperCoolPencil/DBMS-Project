@@ -56,10 +56,12 @@ CREATE TABLE Property (
 -- ============================================================
 -- Table: Transaction
 -- Records every sale or rental that has occurred.
--- Agent_ID  → the agent who facilitated
+-- Agent_ID   → the agent who facilitated
 -- Property_ID → the property involved
--- Cust_ID  → the buyer / renter
+-- Buyer_ID   → the buyer / renter
+-- Seller_ID  → the seller / landlord (owner at the time)
 -- Listing_Date here is the historical listing date (snapshot).
+-- When a property is sold, Property.Cust_ID is updated to Buyer_ID.
 -- ============================================================
 CREATE TABLE Transaction (
     Txn_ID              INT             PRIMARY KEY AUTO_INCREMENT,
@@ -69,7 +71,8 @@ CREATE TABLE Transaction (
     Purpose             ENUM('Sale', 'Rent') NOT NULL,
     Property_ID         INT             NOT NULL,
     Agent_ID            INT             NOT NULL,
-    Cust_ID             INT             NOT NULL,
+    Buyer_ID            INT             NOT NULL,
+    Seller_ID           INT             NOT NULL,
     CONSTRAINT fk_txn_property FOREIGN KEY (Property_ID)
         REFERENCES Property(Property_ID)
         ON UPDATE CASCADE
@@ -78,7 +81,11 @@ CREATE TABLE Transaction (
         REFERENCES Agent(Agent_ID)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
-    CONSTRAINT fk_txn_customer FOREIGN KEY (Cust_ID)
+    CONSTRAINT fk_txn_buyer FOREIGN KEY (Buyer_ID)
+        REFERENCES Customer(Cust_ID)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_txn_seller FOREIGN KEY (Seller_ID)
         REFERENCES Customer(Cust_ID)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
@@ -102,7 +109,8 @@ CREATE INDEX idx_txn_date ON Transaction(Txn_Date);
 CREATE INDEX idx_txn_purpose ON Transaction(Purpose);
 CREATE INDEX idx_txn_agent ON Transaction(Agent_ID);
 CREATE INDEX idx_txn_property ON Transaction(Property_ID);
-CREATE INDEX idx_txn_customer ON Transaction(Cust_ID);
+CREATE INDEX idx_txn_buyer ON Transaction(Buyer_ID);
+CREATE INDEX idx_txn_seller ON Transaction(Seller_ID);
 
 -- Speed up joins on Property owner
 CREATE INDEX idx_property_owner ON Property(Cust_ID);
