@@ -1,15 +1,7 @@
--- ============================================================
--- CS241 Project: Deliverable 2 — Relational Schema
--- Real Estate Office Database
--- ============================================================
-
 DROP DATABASE IF EXISTS real_estate;
 CREATE DATABASE real_estate;
 USE real_estate;
 
--- ============================================================
--- Table: Agent
--- ============================================================
 CREATE TABLE Agent (
     Agent_ID            INT             PRIMARY KEY AUTO_INCREMENT,
     Name                VARCHAR(100)    NOT NULL,
@@ -17,10 +9,6 @@ CREATE TABLE Agent (
     Email               VARCHAR(100)    NOT NULL UNIQUE
 );
 
--- ============================================================
--- Table: Customer
--- Buyers, sellers, renters, and landlords are unified here.
--- ============================================================
 CREATE TABLE Customer (
     Cust_ID             INT             PRIMARY KEY AUTO_INCREMENT,
     Name                VARCHAR(100)    NOT NULL,
@@ -28,12 +16,6 @@ CREATE TABLE Customer (
     Email               VARCHAR(100)    NOT NULL UNIQUE
 );
 
--- ============================================================
--- Table: Property
--- Cust_ID is the current owner / landlord (FK → Customer).
--- Purpose is NULL when the property is off the market.
--- Listing_Date is NULL when the property is off the market.
--- ============================================================
 CREATE TABLE Property (
     Property_ID         INT             PRIMARY KEY AUTO_INCREMENT,
     Address             VARCHAR(255)    NOT NULL,
@@ -53,16 +35,6 @@ CREATE TABLE Property (
         ON DELETE RESTRICT
 );
 
--- ============================================================
--- Table: Transaction
--- Records every sale or rental that has occurred.
--- Agent_ID   → the agent who facilitated
--- Property_ID → the property involved
--- Buyer_ID   → the buyer / renter
--- Seller_ID  → the seller / landlord (owner at the time)
--- Listing_Date here is the historical listing date (snapshot).
--- When a property is sold, Property.Cust_ID is updated to Buyer_ID.
--- ============================================================
 CREATE TABLE Transaction (
     Txn_ID              INT             PRIMARY KEY AUTO_INCREMENT,
     Txn_Date            DATE            NOT NULL,
@@ -92,11 +64,6 @@ CREATE TABLE Transaction (
     CONSTRAINT chk_txn_dates CHECK (Txn_Date >= Listing_Date)
 );
 
--- ============================================================
--- Indices
--- ============================================================
-
--- Speed up filtering properties by locality, city, purpose
 CREATE INDEX idx_property_locality ON Property(Locality);
 CREATE INDEX idx_property_city ON Property(City);
 CREATE INDEX idx_property_purpose ON Property(Purpose);
@@ -104,7 +71,6 @@ CREATE INDEX idx_property_type ON Property(Type);
 CREATE INDEX idx_property_year_built ON Property(Year_Built);
 CREATE INDEX idx_property_base_price ON Property(Base_Price);
 
--- Speed up transaction lookups by date, purpose, agent
 CREATE INDEX idx_txn_date ON Transaction(Txn_Date);
 CREATE INDEX idx_txn_purpose ON Transaction(Purpose);
 CREATE INDEX idx_txn_agent ON Transaction(Agent_ID);
@@ -112,5 +78,4 @@ CREATE INDEX idx_txn_property ON Transaction(Property_ID);
 CREATE INDEX idx_txn_buyer ON Transaction(Buyer_ID);
 CREATE INDEX idx_txn_seller ON Transaction(Seller_ID);
 
--- Speed up joins on Property owner
 CREATE INDEX idx_property_owner ON Property(Cust_ID);
