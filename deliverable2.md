@@ -68,17 +68,21 @@ relations, and all relationships are captured via foreign keys.
 | Purpose | ENUM('Sale','Rent') | NOT NULL |
 | Property_ID | INT | FOREIGN KEY -> Property(Property_ID) |
 | Agent_ID | INT | FOREIGN KEY -> Agent(Agent_ID) |
-| Cust_ID | INT | FOREIGN KEY -> Customer(Cust_ID) |
+| Buyer_ID | INT | FOREIGN KEY -> Customer(Cust_ID) |
+| Seller_ID | INT | FOREIGN KEY -> Customer(Cust_ID) |
 
 **Notes:**
 
-- `Cust_ID` here is the buyer/renter (relationship: Buys/Rents).
+- `Seller_ID` is the owner/landlord at the time of the transaction (relationship: Sells/Rents Out).
+- `Buyer_ID` is the buyer/renter (relationship: Buys/Rents).
+- When a property is sold, the `Cust_ID` in the Property table is updated to the `Buyer_ID`, reflecting the new owner.
 - `Listing_Date` is a historical snapshot from when the property was listed.
 - A `CHECK` constraint ensures `Txn_Date >= Listing_Date`.
-- Three foreign keys encode three 1:N relationships from the E-R diagram:
+- Four foreign keys encode four 1:N relationships from the E-R diagram:
   - Facilitates -> `Agent_ID`
   - Involves -> `Property_ID`
-  - Buys/Rents -> `Cust_ID`
+  - Buys/Rents -> `Buyer_ID`
+  - Sells/Rents Out -> `Seller_ID`
 
 ## 3. Indices
 
@@ -96,7 +100,8 @@ relations, and all relationships are captured via foreign keys.
 | idx_txn_purpose | Transaction | Purpose | Filter Sale vs Rent |
 | idx_txn_agent | Transaction | Agent_ID | JOIN with Agent |
 | idx_txn_property | Transaction | Property_ID | JOIN with Property |
-| idx_txn_customer | Transaction | Cust_ID | JOIN with Customer |
+| idx_txn_buyer | Transaction | Buyer_ID | JOIN with Customer (buyer) |
+| idx_txn_seller | Transaction | Seller_ID | JOIN with Customer (seller) |
 
 ## 4. Data Summary
 
