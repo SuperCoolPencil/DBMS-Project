@@ -74,7 +74,7 @@ Sai Bhegde - 2401066
 * `===` indicates **1..\*** (One to Many)
 
 ```mermaid
-graph TD
+graph LR
     %% Tables (Rectangles with Attributes)
     C["<b>CUSTOMER</b><hr><u>Cust_ID</u><br>Name<br>Phone<br>Email"]
     T["<b>TRANSACTION</b><hr><u>Txn_ID</u><br>Txn_Date<br>Final_Amount<br>Listing_Date<br>Purpose"]
