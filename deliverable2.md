@@ -1,4 +1,4 @@
-# CS 241 Project: Deliverable 2 — Relational
+# CS 241 Project: Deliverable 2
 
 # Design
 
@@ -10,6 +10,7 @@
 | Keshav Krishna | 2401104 |
 | Yashwardhan Jadhav | 2401095 |
 | Sai Bhegde | 2401066 |
+
 ## 2. Relational Schema
 
 The relational design is derived directly from the E-R diagram in Deliverable 1. All four entities map to
@@ -23,6 +24,7 @@ relations, and all relationships are captured via foreign keys.
 | Name | VARCHAR(100) | NOT NULL |
 | Phone | VARCHAR(15) | NOT NULL, UNIQUE |
 | Email | VARCHAR(100) | NOT NULL, UNIQUE |
+
 ## 1. 2 Table: Customer
 
 | Column | Type | Constraints |
@@ -48,14 +50,12 @@ relations, and all relationships are captured via foreign keys.
 | Listing_Date | DATE | NULL (off-market) |
 | Purpose | ENUM('Sale','Rent') | NULL (off-market) |
 | Cust_ID | INT | FOREIGN KEY -> Customer(Cust_ID) |
+
 **Notes:**
 
-#### Cust_ID represents the current owner / landlord of the property (relationship: Owns/Sells).
-
-```
-When a property is sold, Cust_ID is updated to the new owner.
-When a property is off the market, Listing_Date and Purpose are set to NULL.
-```
+- `Cust_ID` represents the current owner/landlord of the property (relationship: Owns/Sells).
+- When a property is sold, `Cust_ID` is updated to the new owner.
+- When a property is off the market, `Listing_Date` and `Purpose` are set to `NULL`.
 ### 1. 4 Table: Transaction
 
 
@@ -69,20 +69,16 @@ When a property is off the market, Listing_Date and Purpose are set to NULL.
 | Property_ID | INT | FOREIGN KEY -> Property(Property_ID) |
 | Agent_ID | INT | FOREIGN KEY -> Agent(Agent_ID) |
 | Cust_ID | INT | FOREIGN KEY -> Customer(Cust_ID) |
+
 **Notes:**
 
-#### Cust_ID here is the buyer / renter (relationship: Buys/Rents).
-
-```
-Listing_Date is a historical snapshot from when the property was listed.
-CHECK constraint ensures Txn_Date ≥ Listing_Date.
-Three foreign keys encode three 1 :N relationships from the E-R diagram:
-```
-#### Facilitates → Agent_ID
-
-#### Involves → Property_ID
-
-#### Buys/Rents → Cust_ID
+- `Cust_ID` here is the buyer/renter (relationship: Buys/Rents).
+- `Listing_Date` is a historical snapshot from when the property was listed.
+- A `CHECK` constraint ensures `Txn_Date >= Listing_Date`.
+- Three foreign keys encode three 1:N relationships from the E-R diagram:
+  - Facilitates -> `Agent_ID`
+  - Involves -> `Property_ID`
+  - Buys/Rents -> `Cust_ID`
 
 ## 3. Indices
 
@@ -101,6 +97,7 @@ Three foreign keys encode three 1 :N relationships from the E-R diagram:
 | idx_txn_agent | Transaction | Agent_ID | JOIN with Agent |
 | idx_txn_property | Transaction | Property_ID | JOIN with Property |
 | idx_txn_customer | Transaction | Cust_ID | JOIN with Customer |
+
 ## 4. Data Summary
 
 | Table | Row Count | Notes |
@@ -109,6 +106,7 @@ Three foreign keys encode three 1 :N relationships from the E-R diagram:
 | Customer | 25 | Owners, buyers, and renters |
 | Property | 30 | Mix of House/Flat |
 | Transaction | 30 | Spanning 2017 - 2025 (Sale and Rent) |
+
 ### Cities Covered
 
 Guwahati, Mumbai, Delhi, Kolkata, Bangalore
@@ -118,6 +116,7 @@ Guwahati, Mumbai, Delhi, Kolkata, Bangalore
 - For Sale: 12 properties
 - For Rent: 12 properties
 - Off Market: 6 properties
+
 ## 5. Team Contributions
 
 | Member | Contribution |
@@ -126,6 +125,7 @@ Guwahati, Mumbai, Delhi, Kolkata, Bangalore
 | Keshav Krishna | Data generation, transaction records |
 | Yashwardhan Jadhav | Index design |
 | Sai Bhegde | Data validation, constraint definitions |
+
 All members reviewed the final deliverable collectively.
 
 ## 6. AI Usage
