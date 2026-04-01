@@ -9,137 +9,101 @@ Sai Bhegde - 2401066
 
 ## 1. Assumptions
 
-```
-Buyers, sellers, renters, and landlords are grouped into a single Customer entity.
-To calculate the "average time the property was on the market," a Listing_Date and Txn_Date are
-required.
-Market time is computed as Txn_Date − Listing_Date.
-When a property is re-listed for sale or rent after a previous transaction has concluded, a new
-Transaction record is created with a new Listing_Date.
-To handle an agent selling or renting multiple properties over time, a Transaction entity is used.
-A property is strictly categorized as being for either 'Sale' or 'Rent'.
-When a property is sold the Cust_ID associated with it is changed.
-The Base_Price attribute represents the total asking price for sales or the monthly asking rent for
-rental listings.
-Each Customer and Agent provides exactly one phone number and one email address.
-The Year_Built attribute is stored as a four-digit integer.
-The Address attribute is decomposed into Locality and City. We assume "Guwahati" as the
-default city unless otherwise specified.
-Transaction table contains the historical Listing_Date and Purpose which are unrelated to
-Property's current state.
-After a Property is sold/rented (ie. once it is off the market) the Listing_Date and Purpose will be
-NULL
-Rent amount is always monthly for both Base_Price and Final_Price
-```
+- Buyers, sellers, renters, and landlords are grouped into a single Customer entity.
+- To calculate the "average time the property was on the market," a Listing_Date and Txn_Date are required.
+- Market time is computed as Txn_Date - Listing_Date.
+- When a property is re-listed for sale or rent after a previous transaction has concluded, a new Transaction record is created with a new Listing_Date.
+- To handle an agent selling or renting multiple properties over time, a Transaction entity is used.
+- A property is strictly categorized as being for either 'Sale' or 'Rent'.
+- When a property is sold the Cust_ID associated with it is changed.
+- The Base_Price attribute represents the total asking price for sales or the monthly asking rent for rental listings.
+- Each Customer and Agent provides exactly one phone number and one email address.
+- The Year_Built attribute is stored as a four-digit integer.
+- The Address attribute is decomposed into Locality and City. We assume "Guwahati" as the default city unless otherwise specified.
+- Transaction table contains the historical Listing_Date and Purpose which are unrelated to Property's current state.
+- After a Property is sold/rented (ie. once it is off the market) the Listing_Date and Purpose will be NULL.
+- Rent amount is always monthly for both Base_Price and Final_Price.
 ## 2. Entities and Attributes
 
-```
-Agent
-Agent_ID (PK)
-Name
-Phone
-```
+### Agent
+- Agent_ID (PK)
+- Name
+- Phone
+- Email
 
-```
-Email
-Property
-Property_ID (PK)
-Address
-City (e.g., Guwahati)
-Locality (e.g., G.S. Road)
-Type (House/Flat)
-Size_Sqft
-Bedrooms
-Year_Built
-Base_Price (Expected selling price or rent amount)
-Listing_Date
-Purpose (Sale/Rent/NULL)
-Customer
-Cust_ID (PK)
-Name
-Phone
-Email
-Transaction
-Txn_ID (PK)
-Txn_Date
-Final_Amount (Actual sold price or final rent amount)
-Listing_Date
-Purpose (Sale/Rent)
-```
+### Property
+- Property_ID (PK)
+- Address
+- City (e.g., Guwahati)
+- Locality (e.g., G.S. Road)
+- Type (House/Flat)
+- Size_Sqft
+- Bedrooms
+- Year_Built
+- Base_Price (Expected selling price or rent amount)
+- Listing_Date
+- Purpose (Sale/Rent/NULL)
+
+### Customer
+- Cust_ID (PK)
+- Name
+- Phone
+- Email
+
+### Transaction
+- Txn_ID (PK)
+- Txn_Date
+- Final_Amount (Actual sold price or final rent amount)
+- Listing_Date
+- Purpose (Sale/Rent)
 ## 3. Relationships & Cardinalities
 
 
-```
-Relationship
-Name
-```
-```
-Entity 1 Entity 2 Cardinality Description
-```
-```
-Owns / Sells Customer Property 1 : N One customer (Owner/Seller) can list
-multiple properties for rent/sale, but a
-property is listed by exactly one customer.
-Facilitates Agent Transaction 1 : N One agent can do many transactions, but a
-single transaction is done by exactly one
-agent.
-Involves Property Transaction 1 : N A property can be sold/rented multiple
-times over its lifetime.
-Buys / Rents Customer Transaction 1 : N A customer (Buyer/Renter) can participate in
-multiple transactions, but a single
-transaction involves exactly one customer.
-```
+| Relationship Name | Entity 1 | Entity 2 | Cardinality | Description |
+|---|---|---|---|---|
+| Owns / Sells | Customer | Property | 1 : N | One customer (Owner/Seller) can list multiple properties for rent/sale, but a property is listed by exactly one customer. |
+| Facilitates | Agent | Transaction | 1 : N | One agent can do many transactions, but a single transaction is done by exactly one agent. |
+| Involves | Property | Transaction | 1 : N | A property can be sold/rented multiple times over its lifetime. |
+| Buys / Rents | Customer | Transaction | 1 : N | A customer (Buyer/Renter) can participate in multiple transactions, but a single transaction involves exactly one customer. |
 ## 4. E-R Diagram
 
 **Cardinality Legend:**
 
-```
----> indicates 1 .. 1 (Exactly One)
---- indicates 0 ..* (Zero to Many)
-```
-```
-CUSTOMER
-Cust_ID
-Name
-Phone
-Email
-```
-```
-TRANSACTION
-Txn_ID
-Txn_Date
-Final_Amount
-Listing_Date
-Purpose
-PROPERTY
-Property_ID
-Address
-City
-Locality
-Type
-Size_Sqft
-Bedrooms
-Year_Built
-Base_Price
-Listing_Date
-Purpose
-```
-```
-AGENT
-Agent_ID
-Name
-Phone
-Email
-Rents
-```
-```
-Facilitates
-```
-```
-Involves Owns / Sells
-```
-```
-Buys
+* `--->` indicates **1..1** (Exactly One)
+* `---` indicates **0..\*** (Zero to Many)
+* `===` indicates **1..\*** (One to Many)
+
+```mermaid
+graph TD
+    %% Tables (Rectangles with Attributes)
+    C["<b>CUSTOMER</b><hr><u>Cust_ID</u><br>Name<br>Phone<br>Email"]
+    T["<b>TRANSACTION</b><hr><u>Txn_ID</u><br>Txn_Date<br>Final_Amount<br>Listing_Date<br>Purpose"]
+    P["<b>PROPERTY</b><hr><u>Property_ID</u><br>Address<br>City<br>Locality<br>Type<br>Size_Sqft<br>Bedrooms<br>Year_Built<br>Base_Price<br>Listing_Date<br>Purpose"]
+    A["<b>AGENT</b><hr><u>Agent_ID</u><br>Name<br>Phone<br>Email"]
+
+    %% Relationships (Diamonds)
+    Rel_RentBuy{"Buys / Rents"}
+    Rel_Facilitates{"Facilitates"}
+    Rel_ListSellsProp{"Owns / Sells"}
+    Rel_Involves{"Involves"}
+
+    %% --- CUSTOM NOTATION CARDINALITIES ---
+    
+    %% TRANSACTION (1..1) to CUSTOMER (0..*)
+    T ---> Rel_RentBuy
+    Rel_RentBuy --- C
+
+    %% TRANSACTION (1..1) to AGENT (0..*)
+    T ---> Rel_Facilitates
+    Rel_Facilitates --- A
+
+    %% PROPERTY (1..1) to CUSTOMER (1..*)
+    P ---> Rel_ListSellsProp
+    Rel_ListSellsProp --- C
+
+    %% TRANSACTION (1..1) to PROPERTY (0..*)
+    T ---> Rel_Involves
+    Rel_Involves --- P
 ```
 
 ## 5. Team Contributions
